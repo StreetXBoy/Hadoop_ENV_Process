@@ -1,0 +1,111 @@
+https://blog.csdn.net/pgs1004151212/article/details/104391391
+
+
+ssh-keygen -t rsa
+
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+
+ ssh localhost
+
+ 免密登录ssh
+ -----------------------------------------------------------
+
+ rew install hadoop，下载Hadoop
+
+ vim /usr/local/Cellar/hadoop/3.2.1/libexec/etc/hadoop/core-site.xml
+
+
+ <property>
+      <name>hadoop.tmp.dir</name>
+      <value>file:/usr/local/Cellar/hadoop/3.2.1/libexec/tmp</value>
+   </property>
+   <property>
+      <name>fs.defaultFS</name>
+      <value>hdfs://localhost:8020</value>
+   </property>
+
+
+   vim /usr/local/Cellar/hadoop/3.2.1/libexec/etc/hadoop/hdfs-site.xml
+
+   <property>
+            <name>dfs.replication</name>
+            <value>1</value>
+       </property>
+       <property>
+            <name>dfs.namenode.name.dir</name>
+            <value>file:/usr/local/Cellar/hadoop/3.2.1/libexec/tmp/dfs/name</value>
+       </property>
+       <property>
+            <name>dfs.namenode.data.dir</name>
+            <value>file:/usr/local/Cellar/hadoop/3.2.1/libexec/tmp/dfs/data</value>
+       </property>
+
+
+
+
+
+       在terminal输入vi ~/.bash_profile ，对环境变量文件进行编辑，添加以下信息：
+
+       export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home
+       export CLASSPAHT=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+       export HADOOP_HOME=/usr/local/Cellar/hadoop/3.2.1/libexec
+       export HADOOP_COMMON_HOME=$HADOOP_HOME
+       export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin:/usr/local/Cellar/scala/bin
+
+在terminal输入source ~/.bash_profile ，使刚刚修改的环境变量生效：
+
+
+
+
+ ./start-dfs.sh
+
+http://localhost:9870/dfshealth.html#tab-overview
+
+
+------------------------------------------------
+
+
+修改配置文件/usr/local/Cellar/hadoop/3.2.1/libexec/etc/hadoop/mapred-site.xml，添加以下内容：
+
+<property>
+<name>mapreduce.framework.name
+</name>
+ <value>yarn</value>
+ </property>
+
+usr/local/Cellar/hadoop/3.2.1/libexec/etc/hadoop/yarn-site.xml
+
+<property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+</property>
+<property>
+        <name>yarn.nodemanager.env-whitelist</name>
+ <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+</property>
+
+
+
+
+./start-yarn.sh
+
+
+http://localhost:8088/cluster
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
